@@ -1,40 +1,130 @@
 from collections import defaultdict
 
+from factorio.maker import maker as M
 
-class Resource:
-  def __init__(self, name, seconds_per_batch, num_per_batch, recipe=None):
-    self.name = name
-    self.seconds_per_batch = seconds_per_batch
-    self.num_per_batch = num_per_batch
-    self.recipe = recipe
-    self._num_per_second = self.num_per_batch / self.seconds_per_batch
+class AbstractResource:
+  recipe = None
+
+  @classmethod
+  def name(cls):
+    return cls.__name__
+
+  @classmethod
+  def _num_per_second(cls):
+    return cls.num_per_batch / cls.seconds_per_batch
+
+  @property
+  def MAKER(self):
+    raise NotImplementedError(f"{self.name()} needs a maker!")
 
   def __str__(self):
-    return self.name
+    return self.name()
 
   def __repr__(self):
-    return f"{self.name}({self.seconds_per_batch}s, #{self.num_per_batch})"
+    return f"{self.name()}({self.seconds_per_batch}s, #{self.num_per_batch})"
 
-  def full_recipe(self, nps_desired=1):
-    full = defaultdict(float, {self: nps_desired})
-    batches_per_sec = nps_desired / self.num_per_batch
-    if self.recipe:
-      for resource, count in self.recipe.items():
-        sub_full = resource.full_recipe()
-        for sub_resource, sub_count in sub_full.items():
-          # TODO(dan): ...why doesn't sub_count get used???
-          full[sub_resource] += (count * batches_per_sec)
-    return full
+  @classmethod
+  def _makers_needed(cls, nps_desired):
+    return nps_desired / (cls._num_per_second() * cls.MAKER.DEFAULT_SPEED)
 
+  @classmethod
+  def _num_sub_items_needed(cls, item, nps_desired):
+    return cls.recipe[item] * nps_desired / cls.num_per_batch
 
-# TODO(dan): resource-types: Minable, Furnace, Assembler - so "preferred maker" speed can work
-COAL = Resource("Coal", 2, 1)
-IRON_ORE = Resource("Iron Ore", 2, 1)
-COPPER_ORE = Resource("Copper Ore", 2, 1)
-STONE = Resource("Stone", 2, 1)
+  @classmethod
+  def itemized_recipe(cls, nps_desired=1, indent=""):
+    makers_needed = cls._makers_needed(nps_desired)
+    print(f"{indent}{cls.name()} : {makers_needed:.03} {cls.MAKER.name}")
+    if not cls.recipe:
+      return
+    for item in cls.recipe:
+      num_sub_items = cls._num_sub_items_needed(item, nps_desired)
+      item.itemized_recipe(num_sub_items, indent=indent+"    ")
 
-IRON_PLATE = Resource("Iron Plate", 3.2, 1, {IRON_ORE: 1})
-COPPER_PLATE = Resource("Copper Plate", 3.2, 1, {COPPER_ORE: 1})
+  @classmethod
+  def _combined_recipe(cls, nps_desired=1):
+    makers_needed = cls._makers_needed(nps_desired)
+    basics = defaultdict(int)
+    if not cls.recipe or issubclass(cls.MAKER, M.AbstractFurnace):
+      basics[cls] = makers_needed
+    if cls.recipe:
+      for item in cls.recipe:
+        num_sub_items = cls._num_sub_items_needed(item, nps_desired)
+        sub_basics = item._combined_recipe(num_sub_items)
+        for sub_item, sub_count in sub_basics.items():
+          basics[sub_item] += sub_count
+    return basics
 
-COPPER_CABLE = Resource("Copper Cable", 0.5, 2, {COPPER_PLATE: 1})
-STEEL = Resource("Steel", 16, 1, {IRON_PLATE: 5})
+  @classmethod
+  def combined_recipe(cls, nps_desired=1):
+    basics = cls._combined_recipe(nps_desired)
+    for basic_item, basic_count in sorted(basics.items(), key=lambda kv: kv[0].name()):
+      print(f"{basic_item.name()} : {basic_count} {basic_item.MAKER.name}")
+
+##################################################
+class MiningResource(AbstractResource):
+  MAKER = M.ElectricDrill
+
+class Coal(MiningResource):
+  seconds_per_batch = 2
+  num_per_batch = 1
+
+class IronOre(MiningResource):
+  seconds_per_batch = 2
+  num_per_batch = 1
+
+class CopperOre(MiningResource):
+  seconds_per_batch = 2
+  num_per_batch = 1
+
+class Stone(MiningResource):
+  seconds_per_batch = 2
+  num_per_batch = 1
+
+##################################################
+class FurnaceResource(AbstractResource):
+  MAKER = M.StoneFurnace
+
+class IronPlate(FurnaceResource):
+  seconds_per_batch = 3.2
+  num_per_batch = 1
+  recipe = {IronOre: 1}
+
+class CopperPlate(FurnaceResource):
+  seconds_per_batch = 3.2
+  num_per_batch = 1
+  recipe = {CopperOre: 1}
+
+class StoneBrick(FurnaceResource):
+  seconds_per_batch = 3.2
+  num_per_batch = 1
+  recipe = {Stone: 2}
+
+class Steel(FurnaceResource):
+  seconds_per_batch = 16
+  num_per_batch = 1
+  recipe = {IronPlate: 5}
+
+##################################################
+class AssemblerResource(AbstractResource):
+  MAKER = M.Assembler2
+
+class Pipe(AssemblerResource):
+  seconds_per_batch = 0.5
+  num_per_batch = 1
+  recipe = {IronPlate: 1}
+
+class Gear(AssemblerResource):
+  seconds_per_batch = 0.5
+  num_per_batch = 1
+  recipe = {IronPlate: 2}
+
+class IronStick(AssemblerResource):
+  seconds_per_batch = 0.5
+  num_per_batch = 2
+  recipe = {IronPlate: 1}
+
+class CopperCable(AssemblerResource):
+  seconds_per_batch = 0.5
+  num_per_batch = 2
+  recipe = {CopperPlate: 1}
