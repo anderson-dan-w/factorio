@@ -6,22 +6,18 @@ class AbstractResource:
   recipe = None
 
   @classmethod
-  def name(cls):
-    return cls.__name__
-
-  @classmethod
   def _num_per_second(cls):
     return cls.num_per_batch / cls.seconds_per_batch
 
   @property
   def MAKER(self):
-    raise NotImplementedError(f"{self.name()} needs a maker!")
+    raise NotImplementedError(f"{self.__class__.__name__} needs a maker!")
 
   def __str__(self):
-    return self.name()
+    return self.__class__.__name__
 
   def __repr__(self):
-    return f"{self.name()}({self.seconds_per_batch}s, #{self.num_per_batch})"
+    return f"{self.__class__.__name__}({self.seconds_per_batch}s, #{self.num_per_batch})"
 
   @classmethod
   def _makers_needed(cls, nps_desired):
@@ -34,7 +30,7 @@ class AbstractResource:
   @classmethod
   def itemized_recipe(cls, nps_desired=1, indent=""):
     makers_needed = cls._makers_needed(nps_desired)
-    print(f"{indent}{cls.name()} : {makers_needed:.03} {cls.MAKER.name}")
+    print(f"{indent}{cls.__name__} : {makers_needed:.3g} {cls.MAKER.name}")
     if not cls.recipe:
       return
     for item in cls.recipe:
@@ -58,8 +54,8 @@ class AbstractResource:
   @classmethod
   def combined_recipe(cls, nps_desired=1):
     basics = cls._combined_recipe(nps_desired)
-    for basic_item, basic_count in sorted(basics.items(), key=lambda kv: kv[0].name()):
-      print(f"{basic_item.name()} : {basic_count} {basic_item.MAKER.name}")
+    for basic_item, basic_count in sorted(basics.items(), key=lambda kv: kv[0].__name__):
+      print(f"{basic_item.__name__} : {basic_count:.3g} {basic_item.MAKER.name}")
 
 ##################################################
 class MiningResource(AbstractResource):
@@ -128,3 +124,23 @@ class CopperCable(AssemblerResource):
   seconds_per_batch = 0.5
   num_per_batch = 2
   recipe = {CopperPlate: 1}
+
+##################################################
+class Water(AbstractResource):
+  MAKER = M.WaterPump
+  seconds_per_batch = 1
+  num_per_batch = 1200
+
+class CrudeOil(AbstractResource):
+  MAKER = M.PumpJack
+  seconds_per_batch = 1
+  # NOTE(dan): this number changes as the pump depletes...
+  num_per_batch = 30
+
+##################################################
+class AbstractOilResource(AbstractResource):
+  MAKER = M.OilRefinery
+
+##################################################
+class AbstractChemicalResource(AbstractResource):
+  MAKER = M.ChemicalPlant
