@@ -41,7 +41,7 @@ class AbstractResource:
   def _combined_recipe(cls, nps_desired=1):
     makers_needed = cls._makers_needed(nps_desired)
     basics = defaultdict(int)
-    if not cls.recipe or issubclass(cls.MAKER, M.AbstractFurnace):
+    if not cls.recipe or issubclass(cls.MAKER, (M.AbstractFurnace, M.ChemicalPlant)):
       basics[cls] = makers_needed
     if cls.recipe:
       for item in cls.recipe:
@@ -138,9 +138,9 @@ class CrudeOil(AbstractResource):
   num_per_batch = 30
 
 ##################################################
-class AbstractOilResource(AbstractResource):
+class OilResource(AbstractResource):
   MAKER = M.OilRefinery
 
 ##################################################
-class AbstractChemicalResource(AbstractResource):
+class ChemicalResource(AbstractResource):
   MAKER = M.ChemicalPlant
