@@ -1,18 +1,38 @@
-from factorio.resource.spacexp.fluids import *
-from factorio.resource.resource import *
+from factorio.resource.spacexp import fluids as F
+from factorio.resource.spacexp import resource as SR
+from factorio.resource import resource as R
 
-class Plastic(AbstractChemicalResource):
+class Plastic(R.ChemicalResource):
   seconds_per_batch = 1 
   num_per_batch = 2
   recipe = {
-    Coal: 1,
-    Petroleum: 20,
+    R.Coal: 1,
+    F.Petroleum: 20,
   }
 
-class Sulfur(AbstractChemicalResource):
+class Sulfur(R.ChemicalResource):
   seconds_per_batch = 1
   num_per_batch = 2
   recipe = {
-    Water: 30,
-    Petroleum: 30,
+    R.Water: 30,
+    F.Petroleum: 30,
+  }
+
+class RedCircuit(R.AssemblerResource):
+  seconds_per_batch = 6
+  num_per_batch = 1
+  recipe = {
+    R.CopperCable: 4,
+    SR.GreenCircuit: 2,
+    Plastic: 2,
+  }
+
+class GreenMotor(R.AssemblerResource):
+  seconds_per_batch = 10
+  num_per_batch = 1
+  recipe = {
+    SR.GreenCircuit: 4,
+    F.Lube: 40,
+    R.Steel: 2,
+    SR.BlueMotor: 2,
   }

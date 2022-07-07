@@ -1,55 +1,55 @@
-from factorio.resource.resource import *
+from factorio.resource import resource as R
 
-class Sand(AssemblerResource):
+class Sand(R.AssemblerResource):
   seconds_per_batch = 0.5
   num_per_batch = 2
-  recipe = {Stone: 1}
+  recipe = {R.Stone: 1}
 
-class Glass(AssemblerResource):
+class Glass(R.AssemblerResource):
   seconds_per_batch = 4
   num_per_batch = 1
   recipe = {Sand: 4}
 
-class StoneTablet(AssemblerResource):
+class StoneTablet(R.AssemblerResource):
   seconds_per_batch = 0.5
   num_per_batch = 4
-  recipe = {StoneBrick: 1}
+  recipe = {R.StoneBrick: 1}
 
-class StoneFurnace(AssemblerResource):
+class StoneFurnace(R.AssemblerResource):
   seconds_per_batch = 0.5
   num_per_batch = 1
-  recipe = {Stone: 5}
+  recipe = {R.Stone: 5}
 
-class SingleCylinder(AssemblerResource):
+class SingleCylinder(R.AssemblerResource):
   seconds_per_batch = 0.6
   num_per_batch = 1
   recipe = {
-    Gear: 1,
-    IronPlate: 1,
+    R.Gear: 1,
+    R.IronPlate: 1,
   }
 
-class MultiCylinder(AssemblerResource):
+class MultiCylinder(R.AssemblerResource):
   seconds_per_batch = 10
   num_per_batch = 1
   recipe = {
     SingleCylinder: 2,
-    Gear: 2,
-    Steel: 2,
+    R.Gear: 2,
+    R.Steel: 2,
   }
 
-class GreenCircuit(AssemblerResource):
+class GreenCircuit(R.AssemblerResource):
   seconds_per_batch = 0.5
   num_per_batch = 1
   recipe = {
     StoneTablet: 1,
-    CopperCable: 3,
+    R.CopperCable: 3,
   }
 
-class BlueMotor(AssemblerResource):
+class BlueMotor(R.AssemblerResource):
   seconds_per_batch = 0.8
   num_per_batch = 1
   recipe = {
-    CopperCable: 6,
-    Gear: 1,
-    IronPlate: 1,
+    R.CopperCable: 6,
+    R.Gear: 1,
+    R.IronPlate: 1,
   }

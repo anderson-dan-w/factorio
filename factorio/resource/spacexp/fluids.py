@@ -1,4 +1,4 @@
-from factorio.resource.resource import *
+from factorio.resource import resource as R
 
 class OilRefineryRecipe:
   pass
@@ -20,31 +20,38 @@ class HeavyOilRecipe(OilRefineryRecipe):
 
 DEFAULT_OIL_RECIPE = LightOilRecipe
 
-class Petroleum(AbstractOilResource):
+class Petroleum(R.OilResource):
   RECIPE = DEFAULT_OIL_RECIPE
   seconds_per_batch = 5
   num_per_batch = RECIPE.PETROLEUM
   recipe = {
-    Water: 50,
-    CrudeOil: 100,
+    R.Water: 50,
+    R.CrudeOil: 100,
   }
 
-class LightOil(AbstractOilResource):
+class LightOil(R.OilResource):
   RECIPE = DEFAULT_OIL_RECIPE
   seconds_per_batch = 5
   num_per_batch = RECIPE.LIGHT_OIL
   recipe = {
-    Water: 50,
-    CrudeOil: 100,
+    R.Water: 50,
+    R.CrudeOil: 100,
   }
 
-class HeavyOil(AbstractOilResource):
+class HeavyOil(R.OilResource):
   RECIPE = DEFAULT_OIL_RECIPE
   seconds_per_batch = 5
   num_per_batch = RECIPE.HEAVY_OIL
   recipe = {
-    Water: 50,
-    CrudeOil: 100,
+    R.Water: 50,
+    R.CrudeOil: 100,
   }
 
-  # TODO(dan): what about heavy->light and light->petroleum chem plants?
+# TODO(dan): what about heavy->light and light->petroleum chem plants?
+
+class Lube(R.ChemicalResource):
+  seconds_per_batch = 1
+  num_per_batch = 10
+  recipe = {
+    HeavyOil: 10,
+  }
