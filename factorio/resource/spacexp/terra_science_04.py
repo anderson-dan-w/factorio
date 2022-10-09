@@ -1,6 +1,6 @@
-from factorio.resource.spacexp.resource import *
-from factorio.resource.spacexp.inserters import *
-from factorio.resource.spacexp.transport import *
+from factorio.resource.spacexp.resource_02 import *
+from factorio.resource.spacexp.inserters_03 import *
+from factorio.resource.spacexp.transport_03 import *
 
 class RedScience(AssemblerResource):
   seconds_per_batch = 5

@@ -1,4 +1,4 @@
-from factorio.resource import resource as R
+from factorio.resource_01 import resource as R
 
 class OilRefineryRecipe:
   pass

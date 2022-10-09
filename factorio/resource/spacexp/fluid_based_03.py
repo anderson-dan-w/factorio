@@ -1,6 +1,6 @@
-from factorio.resource.spacexp import fluids as F
-from factorio.resource.spacexp import resource as SR
-from factorio.resource import resource as R
+from factorio.resource import resource_01 as R
+from factorio.resource.spacexp import fluids_02 as F
+from factorio.resource.spacexp import resource_02 as SR
 
 class Plastic(R.ChemicalResource):
   seconds_per_batch = 1 

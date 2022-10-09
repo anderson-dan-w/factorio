@@ -1,5 +1,5 @@
-from factorio.resource.resource import *
-from factorio.resource.spacexp.resource import *
+from factorio.resource.resource_01 import *
+from factorio.resource.spacexp.resource_02 import *
 
 ##################################################
 # Arms

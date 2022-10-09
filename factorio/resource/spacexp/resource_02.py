@@ -1,4 +1,4 @@
-from factorio.resource import resource as R
+from factorio.resource import resource_01 as R
 
 class Sand(R.AssemblerResource):
   seconds_per_batch = 0.5
