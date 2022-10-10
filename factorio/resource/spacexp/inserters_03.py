@@ -36,3 +36,11 @@ class BlueInserter(AssemblerResource):
     YellowInserter: 1,
     IronPlate: 2,
   }
+
+class PurpleInserter(AssemblerResource):
+  seconds_per_batch = 0.5
+  num_per_batch = 1
+  recipe = {
+    GreenCircuit: 4,
+    BlueInserter: 1,
+  }

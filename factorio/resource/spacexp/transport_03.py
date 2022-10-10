@@ -1,5 +1,6 @@
 from factorio.resource.resource_01 import *
 from factorio.resource.spacexp.resource_02 import *
+from factorio.resource.spacexp.fluids_02 import *
 
 ##################################################
 # Transport
@@ -28,6 +29,7 @@ class YellowSplitter(AssemblerResource):
     SingleCylinder: 4,
   }
 
+##################################
 class RedBelt(AssemblerResource):
   seconds_per_batch = 0.5
   num_per_batch = 1
@@ -38,7 +40,7 @@ class RedBelt(AssemblerResource):
 
 class RedUnderground(AssemblerResource):
   seconds_per_batch = 2
-  num_per_batch = 1
+  num_per_batch = 2
   recipe = {
     Gear: 40,
     YellowUnderground: 2,
@@ -51,4 +53,23 @@ class RedSplitter(AssemblerResource):
       Gear: 10,
       GreenCircuit: 10,
       YellowSplitter: 1,
+  }
+
+##################################
+class BlueBelt(AssemblerResource):
+  seconds_per_batch = 0.5
+  num_per_batch = 1
+  recipe = {
+    Gear: 6,
+    RedBelt: 1,
+    Lube: 10,
+  }
+
+class BlueUnderground(AssemblerResource):
+  seconds_per_batch = 2
+  num_per_batch = 2
+  recipe = {
+    Gear: 80,
+    RedUnderground: 2,
+    Lube: 40,
   }

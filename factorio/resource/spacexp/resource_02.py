@@ -53,3 +53,13 @@ class BlueMotor(R.AssemblerResource):
     R.Gear: 1,
     R.IronPlate: 1,
   }
+
+class Concrete(R.AssemblerResource):
+  seconds_per_batch = 10
+  num_per_batch = 10
+  recipe = {
+    R.IronStick: 2,
+    Sand: 10,
+    R.StoneBrick: 5,
+    R.Water: 100,
+  }
