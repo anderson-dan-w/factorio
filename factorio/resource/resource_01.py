@@ -78,8 +78,10 @@ class Stone(MiningResource):
   num_per_batch = 1
 
 ##################################################
+DEFAULT_FURNACE = M.StoneFurnace
+
 class FurnaceResource(AbstractResource):
-  MAKER = M.StoneFurnace
+  MAKER = DEFAULT_FURNACE
 
 class IronPlate(FurnaceResource):
   seconds_per_batch = 3.2
