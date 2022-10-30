@@ -55,7 +55,32 @@ class AbstractResource:
   def combined_recipe(cls, nps_desired=1):
     basics = cls._combined_recipe(nps_desired)
     for basic_item, basic_count in sorted(basics.items(), key=lambda kv: kv[0].__name__):
-      print(f"{basic_item.__name__} : {basic_count:.3g} {basic_item.MAKER.name}")
+      cls.pprint(basic_item, basic_count)
+
+  @classmethod
+  def _full_combined_recipe(cls, nps_desired=1):
+    makers_needed = cls._makers_needed(nps_desired)
+    combined = defaultdict(int)
+    combined[cls] = nps_desired / cls._num_per_second()
+    if cls.recipe:
+      for item in cls.recipe:
+        num_sub_items = cls._num_sub_items_needed(item, nps_desired)
+        sub_combined = item._full_combined_recipe(num_sub_items)
+        for sub_item, sub_count in sub_combined.items():
+          combined[sub_item] += sub_count
+    return combined
+
+  @classmethod
+  def full_combined_recipe(cls, nps_desired=1):
+    combined = cls._full_combined_recipe(nps_desired)
+    max_width = max(len(k.__name__) for k in combined) + 2
+    for item, count in sorted(combined.items(), key=lambda kv: kv[0].__name__):
+      cls.pprint(item, count, max_width)
+
+  @staticmethod
+  def pprint(item, count, max_width=0):
+      print(f"{item.__name__: <{max_width}}: {count:.3g} {item.MAKER.name}")
+
 
 ##################################################
 class MiningResource(AbstractResource):

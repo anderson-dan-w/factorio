@@ -64,7 +64,7 @@ class Concrete(AssemblerResource):
     Water: 100,
   }
 
-class RoughDataSubstrate(FurnaceResource):
+class RoughDataSubstrate(AssemblerResource):
   seconds_per_batch = 5
   num_per_batch = 1
   recipe = {
